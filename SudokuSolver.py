@@ -1,4 +1,5 @@
 import pygame
+import pygame.font
 
 pygame.font.init()
 size = 500
@@ -36,8 +37,8 @@ midnotes = [[[],[],[],[],[],[],[],[],[]],
             [[],[],[],[],[],[],[],[],[]]]
 
 #determining the font
-font = pygame.font.SysFont("comicsans", 40)
-font1 = pygame.font.SysFont("comicsans", 20)
+font = pygame.font.SysFont("microsoftsansserif", 35)
+font1 = pygame.font.SysFont("microsoftsansserif", 15)
 
 #uses x and z to find top left of the box mouse is in
 def cord(pos):
@@ -60,11 +61,13 @@ def addnums():
         for j in range (9):
             if defaultgrid[i][j] != 0:
                 text1 = font.render(str(defaultgrid[i][j]), 1, (0, 0, 0))
-                Window.blit(text1, (i * diff + 20, j * diff + 20))
+                Window.blit(text1, (i * diff + 20, j * diff + 10))
 
 def notemid():
     for i in range (9):
         for j in range (9):
+            if defaultgrid[i][j] != 0:
+                midnotes[i][j] = []
             if midnotes[i][j]:
                 text1 = font1.render(''.join(str(x) for x in midnotes[i][j]), 1, (45, 46, 48))
                 Window.blit(text1, (i * diff + 20, j * diff + 20))
@@ -78,6 +81,7 @@ def highlightbox():
 def fillvalue(value):
     text1 = font.render(str(value), 1, (0, 0, 0))
     Window.blit(text1, (x * diff + 20, z * diff + 20))
+
 
 '''def validvalue(m, k, l, value):
     for it in range(9):
@@ -96,8 +100,10 @@ def fillvalue(value):
 def placenotemid(b,c,value1):
     if value1 not in midnotes[b][c]:
         midnotes[b][c].append(value1)
+        midnotes[b][c].sort()
     else:
         midnotes[b][c].remove(value1)
+        midnotes[b][c].sort()
 
 
 flag=True  
@@ -214,5 +220,6 @@ while flag:
     if flag1 == 1:
         highlightbox()    
     pygame.display.update() 
-   
-pygame.quit()   
+
+pygame.font.quit()      
+pygame.quit()
