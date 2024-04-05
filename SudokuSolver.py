@@ -11,6 +11,7 @@ x = 0
 z = 0
 diff = size/9
 value = 0
+nums = [pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5, pygame.K_6, pygame.K_7, pygame.K_8, pygame.K_9]
 
 defaultgrid = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -27,6 +28,16 @@ defaultgrid = [
 defaultgridcopy = defaultgrid.copy()
 
 midnotes = [[[],[],[],[],[],[],[],[],[]],
+            [[],[],[],[],[],[],[],[],[]],
+            [[],[],[],[],[],[],[],[],[]],
+            [[],[],[],[],[],[],[],[],[]],
+            [[],[],[],[],[],[],[],[],[]],
+            [[],[],[],[],[],[],[],[],[]],
+            [[],[],[],[],[],[],[],[],[]],
+            [[],[],[],[],[],[],[],[],[]],
+            [[],[],[],[],[],[],[],[],[]]]
+
+edgenotes = [[[],[],[],[],[],[],[],[],[]],
             [[],[],[],[],[],[],[],[],[]],
             [[],[],[],[],[],[],[],[],[]],
             [[],[],[],[],[],[],[],[],[]],
@@ -72,6 +83,15 @@ def notemid():
                 text1 = font1.render(''.join(str(x) for x in midnotes[i][j]), 1, (45, 46, 48))
                 Window.blit(text1, (i * diff + 20, j * diff + 20))
 
+def noteedge():
+    for i in range (9):
+        for j in range (9):
+            if defaultgrid[i][j] != 0:
+                edgenotes[i][j] = []
+            if edgenotes[i][j]:
+                text1 = font1.render(''.join(str(x) for x in edgenotes[i][j]), 1, (45, 46, 48))
+                Window.blit(text1, (i * diff + 5, j * diff + 5))
+
 def highlightbox():
     for i in range(2):
         pygame.draw.line(Window, (0, 0, 0), (x*diff+1, (z+i)*diff-1), (x*diff+diff+1, (z+i)*diff-1), 5)
@@ -97,19 +117,24 @@ def fillvalue(value):
                 return False
     return True '''
 
-def placenotemid(b,c,value1):
-    if value1 not in midnotes[b][c]:
-        midnotes[b][c].append(value1)
-        midnotes[b][c].sort()
+def placenotemid(a,b,value1):
+    if value1 not in midnotes[a][b]:
+        midnotes[a][b].append(value1)
+        midnotes[a][b].sort()
     else:
-        midnotes[b][c].remove(value1)
-        midnotes[b][c].sort()
+        midnotes[a][b].remove(value1)
+        midnotes[a][b].sort()
 
+def placenoteedge(a,b,value1):
+    if value1 not in edgenotes[a][b]:
+        edgenotes[a][b].append(value1)
+        midnotes[a][b].sort()
+    else:
+        edgenotes[a][b].remove(value1)
+        edgenotes[a][b].sort()
 
 flag=True  
 flag1 = 0
-rs = 0
-error = 0
 value1 = 0
 
 while flag:
@@ -119,6 +144,7 @@ while flag:
     addnums()
     drawlines()
     notemid()
+    noteedge()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             flag = False   
@@ -143,60 +169,15 @@ while flag:
             if event.key == pygame.K_DOWN:
                 z += 1
                 flag1 = 1
-            if event.key == pygame.K_1:
+            if event.key in nums:
                 if pygame.key.get_mods() & pygame.KMOD_SHIFT:
-                    value1 = 1
+                    value1 = int(chr(event.key))
                     placenotemid(int(x), int(z), value1)
+                elif pygame.key.get_mods() & pygame.KMOD_CTRL:
+                    value1 = int(chr(event.key))
+                    placenoteedge(int(x), int(z), value1)
                 else:
-                    value = 1
-            if event.key == pygame.K_2:
-                if pygame.key.get_mods() & pygame.KMOD_SHIFT:
-                    value1 = 2
-                    placenotemid(int(x), int(z), value1)
-                else:
-                    value = 2
-            if event.key == pygame.K_3:
-                if pygame.key.get_mods() & pygame.KMOD_SHIFT:
-                    value1 = 3
-                    placenotemid(int(x), int(z), value1)
-                else:
-                    value = 3
-            if event.key == pygame.K_4:
-                if pygame.key.get_mods() & pygame.KMOD_SHIFT:
-                    value1 = 4
-                    placenotemid(int(x), int(z), value1)
-                else:
-                    value = 4
-            if event.key == pygame.K_5:
-                if pygame.key.get_mods() & pygame.KMOD_SHIFT:
-                    value1 = 5
-                    placenotemid(int(x), int(z), value1)
-                else:
-                    value = 5
-            if event.key == pygame.K_6:
-                if pygame.key.get_mods() & pygame.KMOD_SHIFT:
-                    value1 = 6
-                    placenotemid(int(x), int(z), value1)
-                else:
-                    value = 6
-            if event.key == pygame.K_7:
-                if pygame.key.get_mods() & pygame.KMOD_SHIFT:
-                    value1 = 7
-                    placenotemid(int(x), int(z), value1)
-                else:
-                    value = 7
-            if event.key == pygame.K_8:
-                if pygame.key.get_mods() & pygame.KMOD_SHIFT:
-                    value1 = 8
-                    placenotemid(int(x), int(z), value1)
-                else:
-                    value = 8
-            if event.key == pygame.K_9:
-                if pygame.key.get_mods() & pygame.KMOD_SHIFT:
-                    value1 = 9
-                    placenotemid(int(x), int(z), value1)
-                else:
-                    value = 9
+                    value = int(chr(event.key))
             if event.key == pygame.K_r:
                 defaultgrid=[
                 [0, 0, 0, 0, 0, 0, 0, 0, 0],
