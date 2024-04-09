@@ -5,6 +5,7 @@ pygame.font.init()
 size = 500
 Window = pygame.display.set_mode((size, size))
 surface = pygame.Surface((size, size), pygame.SRCALPHA)
+surfacecomplete = pygame.Surface((size, size), pygame.SRCALPHA)
 pygame.display.set_caption("Sudoku")
 
 x = 0
@@ -22,7 +23,7 @@ defaultgrid = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0]
     ]
 #option to reset to default (if default is different than all zeros)
 defaultgridcopy = defaultgrid.copy()
@@ -103,19 +104,42 @@ def fillvalue(value):
     Window.blit(text1, (x * diff + 20, z * diff + 20))
 
 
-'''def validvalue(m, k, l, value):
-    for it in range(9):
-        if m[k][it] == value:
+def validboard():
+    for row in range(1):
+        if sorted(defaultgrid[row]) != list(range(1,10)):
             return False
-        if m[it][l] == value:
+
+    check = [] 
+    for col in range(2):
+        for row in range(9):
+            check += [defaultgrid[row][col]]
+        if sorted(check) != list(range(1,10)):
             return False
-    it = k//3
-    jt = l//3
-    for k in range(it * 3, it * 3 + 3):
-        for l in range (jt * 3, jt * 3 + 3):
-            if m[k][l]== value:
-                return False
-    return True '''
+        check = []
+
+    box = []
+    for row in range(0, 3, 3):
+        for col in range (0, 3, 3):
+            box = defaultgrid[row][col:col+3] + defaultgrid[row+1][col:col+3] + defaultgrid[row+2][col:col+3]
+            for i in range(1,10):
+                if i not in box:
+                    return False
+        box = []
+    return True
+
+def endmessage():
+    fin = 0
+    for i in range(9):
+        if 0 not in defaultgrid[i]:
+            fin += 1
+    if fin == 9 and validboard():
+        text1 = font.render("Great job!", 1, (0, 0, 0))
+    else:
+        text1 = font.render("Try again!", 1, (0, 0, 0))
+    textbox = text1.get_rect(center=(size/2, size/2))
+    pygame.draw.rect(surfacecomplete, (255, 255, 255, 225), [0, 0, size, size])
+    Window.blit(surfacecomplete, (0, 0))
+    Window.blit(text1,textbox)
 
 def placenotemid(a,b,value1):
     if value1 not in midnotes[a][b]:
@@ -135,6 +159,7 @@ def placenoteedge(a,b,value1):
 
 flag=True  
 flag1 = 0
+checkgrid = 0
 value1 = 0
 
 while flag:
@@ -179,17 +204,20 @@ while flag:
                 else:
                     value = int(chr(event.key))
             if event.key == pygame.K_r:
-                defaultgrid=[
-                [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0]
-                ]
+                defaultgrid=[[0, 2, 7, 1, 5, 4, 3, 9, 6],
+                            [9, 6, 5, 3, 2, 7, 1, 4, 8],
+                            [3, 4, 1, 6, 8, 9, 7, 5, 2],
+                            [5, 9, 3, 4, 6, 8, 2, 7, 1],
+                            [4, 7, 2, 5, 1, 3, 6, 8, 9],
+                            [6, 1, 8, 9, 7, 2, 4, 3, 5],
+                            [7, 8, 6, 2, 3, 5, 9, 1, 4],
+                            [1, 5, 4, 7, 9, 6, 8, 2, 3],
+                            [2, 3, 9, 8, 4, 1, 5, 6, 7]]
+            if event.key == pygame.K_c:
+                if checkgrid == 1:
+                    checkgrid = 0
+                else:
+                    checkgrid = 1
             if event.key == pygame.K_d:
                 defaultgrid = defaultgridcopy
 
@@ -199,7 +227,15 @@ while flag:
         value = 0    
  
     if flag1 == 1:
-        highlightbox()    
+        highlightbox()
+    
+    if checkgrid == 1:
+        endmessage()
+    
+    
+        
+        
+        
     pygame.display.update() 
 
 pygame.font.quit()      
